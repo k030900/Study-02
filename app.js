@@ -13,6 +13,9 @@ const CATEGORY_LABELS = {
 
 let todos = [];
 let currentFilter = 'all';
+let currentSort = 'default';
+
+const CATEGORY_ORDER = { work: 0, personal: 1, study: 2 };
 
 // --- localStorage ---
 
@@ -113,6 +116,27 @@ function setFilter(filter) {
     render();
 }
 
+// --- 정렬 ---
+
+function sortTodos(list) {
+    const copy = [...list];
+    switch (currentSort) {
+        case 'newest':
+            copy.sort((a, b) => b.id - a.id);
+            break;
+        case 'name':
+            copy.sort((a, b) => a.text.localeCompare(b.text));
+            break;
+        case 'category':
+            copy.sort((a, b) => CATEGORY_ORDER[a.category] - CATEGORY_ORDER[b.category]);
+            break;
+        default:
+            copy.sort((a, b) => a.id - b.id);
+            break;
+    }
+    return copy;
+}
+
 // --- 렌더링 ---
 
 function render() {
@@ -124,7 +148,9 @@ function render() {
         return true;
     });
 
-    filtered.forEach(todo => {
+    const sorted = sortTodos(filtered);
+
+    sorted.forEach(todo => {
         const li = document.createElement('li');
         li.className = `todo-item category-${todo.category}`;
         li.dataset.id = todo.id;
@@ -187,6 +213,11 @@ todoInput.addEventListener('keydown', function (e) {
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => setFilter(btn.dataset.filter));
+});
+
+document.getElementById('sortSelect').addEventListener('change', function () {
+    currentSort = this.value;
+    render();
 });
 
 // --- 초기화 ---

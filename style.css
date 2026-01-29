@@ -132,6 +132,17 @@ body {
     color: #fff;
 }
 
+.sort-select {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background-color: #fff;
+    color: #64748b;
+    outline: none;
+    cursor: pointer;
+}
+
 /* 할 일 목록 */
 .todo-list {
     list-style: none;
