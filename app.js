@@ -12,6 +12,7 @@ const CATEGORY_LABELS = {
 };
 
 let todos = [];
+let currentFilter = 'all';
 
 // --- localStorage ---
 
@@ -102,12 +103,28 @@ function startEdit(id) {
     input.select();
 }
 
+// --- 필터링 ---
+
+function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+    });
+    render();
+}
+
 // --- 렌더링 ---
 
 function render() {
     todoList.innerHTML = '';
 
-    todos.forEach(todo => {
+    const filtered = todos.filter(todo => {
+        if (currentFilter === 'active') return !todo.completed;
+        if (currentFilter === 'completed') return todo.completed;
+        return true;
+    });
+
+    filtered.forEach(todo => {
         const li = document.createElement('li');
         li.className = `todo-item category-${todo.category}`;
         li.dataset.id = todo.id;
@@ -166,6 +183,10 @@ todoInput.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         addTodo();
     }
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => setFilter(btn.dataset.filter));
 });
 
 // --- 초기화 ---
